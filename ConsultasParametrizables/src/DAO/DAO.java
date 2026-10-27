@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class DAO {
 
 	private String user = "root";
-	private String psw = "admin";
+	private String psw = "123456";
 	private String path = "jdbc:mysql://localhost:3306/bd_53";
 
 	int filas;
@@ -53,14 +53,14 @@ public class DAO {
 	
 
 	
-	public void eliminar(int dni)
+	public void eliminar(String dni)
 	{
 		String sql = "DELETE FROM `tabla`WHERE dni = ?;";
 		Connection conexion = null;
 		try {
 			conexion = conectar();
 			PreparedStatement stnt = conexion.prepareStatement(sql);
-			stnt.setInt(1,dni);
+			stnt.setString(1,dni);
 			stnt.executeUpdate(sql);
 			System.out.println("se elimino");
 		} catch (SQLException e) {
@@ -75,15 +75,20 @@ public class DAO {
 		}
 	}
 	
-	public void actualizar(int dni)
+	public void  actualizar(Persona p, String nombree, String dniNuevo)
 	{
-		String sql = "UPDATE `tabla` SET `nombre` = 'Rubi', `dni` = 12345678 WHERE `id` = ?;";
+		Persona p1 = p;
+		String sql = "UPDATE tabla SET nombre = ? , dni = ? WHERE dni = ?;";
 		Connection conexion = null;
 		try {
 			conexion = conectar();
 			PreparedStatement stnt = conexion.prepareStatement(sql);
-			stnt.setInt(1,dni);
-			stnt.executeUpdate(sql);
+			stnt.setString(1, nombree);
+			stnt.setString(2, dniNuevo);
+			stnt.setString(3, p.getDni());
+			
+			
+		
 			System.out.println("se actualizo");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -97,20 +102,49 @@ public class DAO {
 		}
 	}
 	
+	public ArrayList<Persona> consultar()
+	{
+		String sql = "SELECT * FROM tabla ";
+		Connection conexion = null;
+		ArrayList<Persona> solucion = new ArrayList<>();
+		try {
+			conexion = conectar();
+			Statement stnt = conexion.createStatement();
+		    ResultSet rs = stnt.executeQuery(sql);	
+			while(rs.next())
+			{
+				
+				String nombre = rs.getString("nombre");
+				String dni = rs.getString("dni");
+				Persona p1 = new Persona (nombre, dni);
+				solucion.add(p1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conexion.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+		}
+		return solucion;
+	}
 	
 	
-	public int agregarPersonaPorParametro(Persona p) {
+	public void agregarPersonaPorParametro(Persona p) {
 		Connection conexion = null;
 		
-		String sql = "INSERT INTO `bd_53`.`persona`(nombre, dni)VALUES(?,?);";
+		String sql = "INSERT INTO persona (nombre, dni)VALUES(?,?);";
 		try {
 			conexion = conectar();
 			PreparedStatement stmt = conexion.prepareStatement(sql);
 			stmt.setString(1, p.getNombre());
-			stmt.setInt(2, p.getDni());
+			stmt.setString(2, p.getDni());
 		
-			filas = stmt.executeUpdate(); 
-			System.out.println(filas);
+		 
+			System.out.println("se agrego");
 		}catch(SQLException e){
 			e.printStackTrace();
 		}finally {
@@ -120,7 +154,7 @@ public class DAO {
 				e.printStackTrace();
 			}
 		}
-		return filas;
+		
 	}
 	
 	

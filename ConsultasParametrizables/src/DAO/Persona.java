@@ -4,13 +4,13 @@ public class Persona
 {
 	private int id = 1;
 	private String nombre;
-	private int dni;
+	private String dni;
 	
-	public Persona (String nombre, int dni)
+	public Persona (String nombre, String dni)
 	{
 		this.id=id;
-		this.setNombre(nombre);
-		this.setDni(dni);
+		this.nombre=nombre;
+		this.dni = dni;
 		id++;
 	}
 
@@ -18,17 +18,16 @@ public class Persona
 		return nombre;
 	}
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
 
-	public int getDni() {
+	public String getDni() {
 		return dni;
 	}
-
-	public void setDni(int dni) {
-		this.dni = dni;
+	
+	public int getId()
+	{
+		return id;
 	}
+
 	
 
 }
